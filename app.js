@@ -75,9 +75,10 @@ app.delete('/movies/:id', function(req, res) {
 })
 
 app.delete('/movies', function(req, res) {
-  console.log(req.query);
+  console.log('query', req.query ? req.query : '');
   let movieId = req.query.movieId;
-  knex('movies').where('id', movieId)
+  if(movieId) {
+    knex('movies').where('id', movieId)
     .del()
     .then(() => {
       knex.select()
@@ -86,6 +87,13 @@ app.delete('/movies', function(req, res) {
             res.send(movies);
         })
     });
+  } else {
+    res.status(404).json({
+      message:
+        'Movie ID not found'
+      })
+  }
+  
 })
 
 app.get('/setCookies', function(req, res) {
